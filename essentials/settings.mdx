@@ -61,121 +61,57 @@ Example: `mintlify`
       headers, accents, in light mode
     </ResponseField>
     <ResponseField name="light" type="string">
-      The primary color for dark mode. Used for most often for highlighted
-      content, section headers, accents, in dark mode
+      The primary color used in dark mode.
     </ResponseField>
     <ResponseField name="dark" type="string">
-      The primary color for important buttons
-    </ResponseField>
-    <ResponseField name="background" type="object">
-      The color of the background in both light and dark mode
-      <Expandable title="Object">
-        <ResponseField name="light" type="string" required>
-          The hex color code of the background in light mode
-        </ResponseField>
-        <ResponseField name="dark" type="string" required>
-          The hex color code of the background in dark mode
-        </ResponseField>
-      </Expandable>
+      The primary color used in light mode.
     </ResponseField>
   </Expandable>
 </ResponseField>
 
-<ResponseField name="topbarLinks" type="TopbarLink[]">
-  Array of `name`s and `url`s of links you want to include in the topbar
-  <Expandable title="TopbarLink">
-    <ResponseField name="name" type="string">
-    The name of the button.
-
-    Example: `Contact us`
+<ResponseField name="navbar" type="object">
+  Links and the primary button in the top bar. `topbarLinks` and `topbarCtaButton` are not `docs.json` keys.
+  <Expandable title="navbar">
+    <ResponseField name="links" type="array">
+      Each item has `label` and `href`.
     </ResponseField>
-    <ResponseField name="url" type="string">
-    The url once you click on the button. Example: `https://mintlify.com/docs`
-    </ResponseField>
-
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="topbarCtaButton" type="Call to Action">
-  <Expandable title="Topbar Call to Action">
-    <ResponseField name="type" type={'"link" or "github"'} default="link">
-    Link shows a button. GitHub shows the repo information at the url provided including the number of GitHub stars.
-    </ResponseField>
-    <ResponseField name="url" type="string">
-    If `link`: What the button links to.
-    
-    If `github`: Link to the repository to load GitHub information from.
-    </ResponseField>
-    <ResponseField name="name" type="string">
-    Text inside the button. Only required if `type` is a `link`.
-    </ResponseField>
-
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="versions" type="string[]">
-  Array of version names. Only use this if you want to show different versions
-  of docs with a dropdown in the navigation bar.
-</ResponseField>
-
-<ResponseField name="anchors" type="Anchor[]">
-  An array of the anchors, includes the `icon`, `color`, and `url`.
-  <Expandable title="Anchor">
-    <ResponseField name="icon" type="string">
-    The [Font Awesome](https://fontawesome.com/search?q=heart) icon used to feature the anchor.
-
-    Example: `comments`
-    </ResponseField>
-    <ResponseField name="name" type="string">
-    The name of the anchor label.
-
-    Example: `Community`
-    </ResponseField>
-    <ResponseField name="url" type="string">
-      The start of the URL that marks what pages go in the anchor. Generally, this is the name of the folder you put your pages in.
-    </ResponseField>
-    <ResponseField name="color" type="string">
-      The hex color of the anchor icon background. Can also be a gradient if you pass an object with the properties `from` and `to` that are each a hex color.
-    </ResponseField>
-    <ResponseField name="version" type="string">
-      Used if you want to hide an anchor until the correct docs version is selected.
-    </ResponseField>
-    <ResponseField name="isDefaultHidden" type="boolean" default="false">
-      Pass `true` if you want to hide the anchor until you directly link someone to docs inside it.
-    </ResponseField>
-    <ResponseField name="iconType" default="duotone" type="string">
-      One of: "brands", "duotone", "light", "sharp-solid", "solid", or "thin"
-    </ResponseField>
-
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="topAnchor" type="Object">
-  Override the default configurations for the top-most anchor.
-  <Expandable title="Object">
-    <ResponseField name="name" default="Documentation" type="string">
-      The name of the top-most anchor
-    </ResponseField>
-    <ResponseField name="icon" default="book-open" type="string">
-      Font Awesome icon.
-    </ResponseField>
-    <ResponseField name="iconType" default="duotone" type="string">
-      One of: "brands", "duotone", "light", "sharp-solid", "solid", or "thin"
+    <ResponseField name="primary" type="object">
+      The primary button. `type` is `button`, `github`, or `discord`. A button requires `label` and `href`.
     </ResponseField>
   </Expandable>
+
+  ```json
+  "navbar": {
+    "links": [{ "label": "Support", "href": "mailto:hi@example.com" }],
+    "primary": { "type": "button", "label": "Dashboard", "href": "https://example.com" }
+  }
+  ```
 </ResponseField>
 
-<ResponseField name="tabs" type="Tabs[]">
-  An array of navigational tabs.
-  <Expandable title="Tabs">
-    <ResponseField name="name" type="string">
-      The name of the tab label.
-    </ResponseField>
-    <ResponseField name="url" type="string">
-      The start of the URL that marks what pages go in the tab. Generally, this
-      is the name of the folder you put your pages in.
-    </ResponseField>
-  </Expandable>
+<ResponseField name="navigation.versions" type="array">
+  Version dropdowns live under `navigation`, not at the top of `docs.json`.
+</ResponseField>
+
+<ResponseField name="navigation.global.anchors" type="array">
+  External links shown on every page. A top-level `anchors` key is rejected. Each item uses `anchor`, `href`, and `icon`.
+
+  ```json
+  "navigation": {
+    "global": {
+      "anchors": [
+        { "anchor": "Documentation", "href": "https://example.com/docs", "icon": "book-open-cover" }
+      ]
+    }
+  }
+  ```
+</ResponseField>
+
+<ResponseField name="navigation.global" type="object">
+  `topAnchor` is not a `docs.json` key. Put the top external link in `navigation.global.anchors`, shown above.
+</ResponseField>
+
+<ResponseField name="navigation.tabs" type="array">
+  Tabs live under `navigation`, not at the top of `docs.json`. Each item has `tab` and `groups`. See [Navigation](/essentials/navigation).
 </ResponseField>
 
 <ResponseField name="api" type="API">
@@ -208,8 +144,8 @@ Example: `mintlify`
       Configurations for the API playground
 
       <Expandable title="Playground">
-        <ResponseField name="mode" default="show" type='"show" | "simple" | "hide"'>
-          Whether the playground is showing, hidden, or only displaying the endpoint with no added user interactivity `simple`
+        <ResponseField name="display" default="interactive" type='"interactive" | "simple" | "none" | "auth"'>
+          `interactive` is the full playground. `simple` shows the endpoint without extra controls. `none` hides it. `auth` shows it only to signed-in users.
 
           Learn more at the [playground guides](/api-playground/demo)
         </ResponseField>
@@ -225,47 +161,25 @@ Example: `mintlify`
   </Expandable>
 </ResponseField>
 
-<ResponseField name="openapi" type="string | string[]">
-  A string or an array of strings of URL(s) or relative path(s) pointing to your
-  OpenAPI file.
-  
-  Examples:
-  <CodeGroup>
-    ```json Absolute
-    "openapi": "https://example.com/openapi.json"
-    ```
-    ```json Relative
-    "openapi": "/openapi.json"
-    ```
-    ```json Multiple
-    "openapi": ["https://example.com/openapi1.json", "/openapi2.json", "/openapi3.json"]
-    ```
-  </CodeGroup>
+<ResponseField name="api.openapi" type="string | string[] | object">
+  OpenAPI files live under `api.openapi`, not a top-level `openapi` key. The value is a URL, a relative path, an array of those, or an object that also names overlay documents.
 
+  ```json
+  "api": { "openapi": "https://example.com/openapi.json" }
+  ```
 </ResponseField>
 
-<ResponseField name="footerSocials" type="FooterSocials">
-  An object of social media accounts where the key:property pair represents the social media platform and the account url.
-  
-  Example: 
+<ResponseField name="footer.socials" type="object">
+  Social links live under `footer.socials`. A top-level `footerSocials` key is rejected. Each key is a platform name and each value is a URL.
+
   ```json
-  {
-    "x": "https://x.com/mintlify",
-    "website": "https://mintlify.com"
+  "footer": {
+    "socials": {
+      "x": "https://x.com/example",
+      "github": "https://github.com/example"
+    }
   }
   ```
-  <Expandable title="FooterSocials">
-    <ResponseField name="[key]" type="string">
-    One of the following values `website`, `facebook`, `x`, `discord`, `slack`, `github`, `linkedin`, `instagram`, `hacker-news`
-    
-    Example: `x`
-    </ResponseField>
-    <ResponseField name="property" type="string">
-    The URL to the social platform.
-    
-    Example: `https://x.com/mintlify`
-    </ResponseField>
-  </Expandable>
 </ResponseField>
 
 <ResponseField name="feedback" type="Feedback">
@@ -281,38 +195,18 @@ Example: `mintlify`
   </Expandable>
 </ResponseField>
 
-<ResponseField name="modeToggle" type="ModeToggle">
-  Customize the dark mode toggle.
-  <Expandable title="ModeToggle">
-    <ResponseField name="default" type={'"light" or "dark"'}>
-      Set if you always want to show light or dark mode for new users. When not
-      set, we default to the same mode as the user's operating system.
+<ResponseField name="appearance" type="object">
+  Light and dark mode. `modeToggle` is not a `docs.json` key.
+  <Expandable title="appearance">
+    <ResponseField name="default" type='"system" | "light" | "dark"' default="system">
+      The mode for a new visitor. `system` follows the operating system.
     </ResponseField>
-    <ResponseField name="isHidden" type="boolean" default="false">
-      Set to true to hide the dark/light mode toggle. You can combine `isHidden` with `default` to force your docs to only use light or dark mode. For example:
-      
-      <CodeGroup>
-      ```json Only Dark Mode
-      "modeToggle": {
-        "default": "dark",
-        "isHidden": true
-      }
-      ```
-
-      ```json Only Light Mode
-      "modeToggle": {
-        "default": "light",
-        "isHidden": true
-      }
-      ```
-      </CodeGroup>
-
+    <ResponseField name="strict" type="boolean" default="false">
+      Hide the light/dark toggle. Set `default` to `light` or `dark` when `strict` is true to keep one mode.
     </ResponseField>
-
   </Expandable>
 </ResponseField>
 
-<ResponseField name="backgroundImage" type="string">
-  A background image to be displayed behind every page. See example with
-  [Infisical](https://infisical.com/docs) and [FRPC](https://frpc.io).
+<ResponseField name="background" type="object">
+  Page background. `backgroundImage` is not a `docs.json` key. `image` is the decoration image. `color.light` and `color.dark` are the background colors.
 </ResponseField>
