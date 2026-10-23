@@ -4,7 +4,7 @@ description: 'Mintlify gives you complete control over the look and feel of your
 icon: 'gear'
 ---
 
-Every Mintlify site needs a `docs.json` file with the core configuration settings. Learn more about the [properties](#properties) below.
+Every Mintlify site needs a `docs.json` file with the core configuration settings. Learn more about the [properties](#properties) below. The [current schema](https://mintlify.com/docs.json) is the complete reference for accepted keys.
 
 ## Properties
 
@@ -15,23 +15,14 @@ Example: `mintlify`
 
 </ResponseField>
 
-<ResponseField name="navigation" type="Navigation[]" required>
-  An array of groups with all the pages within that group
-  <Expandable title="Navigation">
-    <ResponseField name="group" type="string">
-    The name of the group.
+<ResponseField name="theme" type="string" required>
+  The theme to use, such as `mint` in this starter kit.
+</ResponseField>
 
-    Example: `Settings`
-
-    </ResponseField>
-    <ResponseField name="pages" type="string[]">
-    The relative paths to the markdown files that will serve as pages.
-
-    Example: `["customization", "page"]`
-
-    </ResponseField>
-
-  </Expandable>
+<ResponseField name="navigation" type="object" required>
+  The navigation structure. Choose a collection such as `tabs`, `groups`, or `pages`.
+  Each group has a `group` label and a `pages` array of paths without the `.mdx` extension.
+  See [Navigation](/essentials/navigation) for examples.
 </ResponseField>
 
 <ResponseField name="logo" type="string or object">
@@ -97,6 +88,7 @@ Example: `mintlify`
 
   ```json
   "navigation": {
+    "pages": ["index"],
     "global": {
       "anchors": [
         { "anchor": "Documentation", "href": "https://example.com/docs", "icon": "book-open-cover" }
@@ -111,33 +103,15 @@ Example: `mintlify`
 </ResponseField>
 
 <ResponseField name="navigation.tabs" type="array">
-  Tabs live under `navigation`, not at the top of `docs.json`. Each item has `tab` and `groups`. See [Navigation](/essentials/navigation).
+  Tabs live under `navigation`, not at the top of `docs.json`. Each item has a `tab` label and a navigation collection such as `groups`. See [Navigation](/essentials/navigation).
 </ResponseField>
 
 <ResponseField name="api" type="API">
-  Configuration for API settings. Learn more about API pages at [API Components](/api-playground/demo).
+  Configuration for API settings. Learn more about API pages at [API Components](/api-reference/introduction).
   <Expandable title="API">
-    <ResponseField name="baseUrl" type="string">
-      The base url for all API endpoints. If `baseUrl` is an array, it will enable for multiple base url
-      options that the user can toggle.
-    </ResponseField>
-
-    <ResponseField name="auth" type="Auth">
-      <Expandable title="Auth">
-        <ResponseField name="method" type='"bearer" | "basic" | "key"'>
-          The authentication strategy used for all API endpoints.
-        </ResponseField>
-        <ResponseField name="name" type="string">
-        The name of the authentication parameter used in the API playground.
-
-        If method is `basic`, the format should be `[usernameName]:[passwordName]`
-        </ResponseField>
-        <ResponseField name="inputPrefix" type="string">
-        The default value that's designed to be a prefix for the authentication input field.
-
-        E.g. If an `inputPrefix` of `AuthKey` would inherit the default input result of the authentication field as `AuthKey`.
-        </ResponseField>
-      </Expandable>
+    <ResponseField name="mdx" type="object">
+      Settings for API endpoints defined in MDX. `server` is a base URL or array of base URLs.
+      `auth` accepts `method` (`bearer`, `basic`, `key`, or `cobo`) and `name`.
     </ResponseField>
 
     <ResponseField name="playground" type="Playground">
@@ -147,15 +121,9 @@ Example: `mintlify`
         <ResponseField name="display" default="interactive" type='"interactive" | "simple" | "none" | "auth"'>
           `interactive` is the full playground. `simple` shows the endpoint without extra controls. `none` hides it. `auth` shows it only to signed-in users.
 
-          Learn more at the [playground guides](/api-playground/demo)
+          Learn more at the [playground guides](/api-reference/introduction)
         </ResponseField>
       </Expandable>
-    </ResponseField>
-
-    <ResponseField name="maintainOrder" type="boolean">
-      Enabling this flag ensures that key ordering in OpenAPI pages matches the key ordering defined in the OpenAPI file.
-
-      <Warning>This behavior will soon be enabled by default, at which point this field will be deprecated.</Warning>
     </ResponseField>
 
   </Expandable>
@@ -180,19 +148,6 @@ Example: `mintlify`
     }
   }
   ```
-</ResponseField>
-
-<ResponseField name="feedback" type="Feedback">
-  Configurations to enable feedback buttons
-
-  <Expandable title="Feedback">
-    <ResponseField name="suggestEdit" type="boolean" default="false">
-    Enables a button to allow users to suggest edits via pull requests
-    </ResponseField>
-    <ResponseField name="raiseIssue" type="boolean" default="false">
-    Enables a button to allow users to raise an issue about the documentation
-    </ResponseField>
-  </Expandable>
 </ResponseField>
 
 <ResponseField name="appearance" type="object">
